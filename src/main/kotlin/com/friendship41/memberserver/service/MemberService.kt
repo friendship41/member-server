@@ -3,11 +3,14 @@ package com.friendship41.memberserver.service
 import com.friendship41.memberserver.data.MemberAuthInfo
 import com.friendship41.memberserver.data.MemberAuthInfoRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
 class MemberService(@Autowired private val memberAuthInfoRepository: MemberAuthInfoRepository) {
+    val bCryptPasswordEncoder = BCryptPasswordEncoder(4)
+
     fun getDefaultMemberInfo(user_name: String):MemberAuthInfo? {
         val memberAuthInfo = this.memberAuthInfoRepository.findByMemberId(user_name)
         if (memberAuthInfo != null) {
@@ -27,6 +30,7 @@ class MemberService(@Autowired private val memberAuthInfoRepository: MemberAuthI
             memberAuthInfo.memberRole = "USER"
         }
         memberAuthInfo.memberJoinDate = Date()
+        memberAuthInfo.memberPassword = bCryptPasswordEncoder.encode(memberAuthInfo.memberPassword)
         return this.memberAuthInfoRepository.save(memberAuthInfo)
     }
 }
