@@ -11,6 +11,8 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter
+import org.springframework.security.oauth2.provider.OAuth2Authentication
+import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter
 import org.springframework.security.oauth2.provider.token.RemoteTokenServices
 import org.springframework.web.client.RestTemplate
 import java.security.cert.X509Certificate
@@ -35,6 +37,7 @@ class MemberResourceServerConfig: ResourceServerConfigurerAdapter() {
         tokenService.setCheckTokenEndpointUrl("https://192.168.0.200:42222/oauth/check_token")
         tokenService.setClientId("member_server")
         tokenService.setClientSecret("thisismember")
+        tokenService.setAccessTokenConverter(CustomAccessTokenConverter())
         return tokenService
     }
 }
@@ -49,4 +52,12 @@ fun restTemplate(): RestTemplate {
     val requestFactory = HttpComponentsClientHttpRequestFactory()
     requestFactory.httpClient = httpClient
     return RestTemplate(requestFactory)
+}
+
+class CustomAccessTokenConverter: DefaultAccessTokenConverter() {
+    override fun extractAuthentication(map: MutableMap<String, *>?): OAuth2Authentication {
+        val oAuth2Authentication = super.extractAuthentication(map)
+        oAuth2Authentication.details = map
+        return oAuth2Authentication
+    }
 }
