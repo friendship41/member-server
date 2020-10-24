@@ -26,7 +26,9 @@ class MemberResourceServerConfig: ResourceServerConfigurerAdapter() {
                 .antMatchers("/member")
                 .access("#oauth2.hasScope('read_profile')")
                 .anyRequest()
-                .authenticated()
+                .permitAll()
+                .and()
+                .csrf().disable()
     }
 
     @Primary
@@ -44,7 +46,7 @@ class MemberResourceServerConfig: ResourceServerConfigurerAdapter() {
 
 @Bean
 fun restTemplate(): RestTemplate {
-    val acceptingTrustStrategy = TrustStrategy{ x509Certificate: Array<X509Certificate>, s: String -> true
+    val acceptingTrustStrategy = TrustStrategy{ _: Array<X509Certificate>, _: String -> true
     }
     val sslContext = org.apache.http.ssl.SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy).build()
     val csf = SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier())

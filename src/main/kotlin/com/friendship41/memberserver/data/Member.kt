@@ -11,13 +11,13 @@ import javax.persistence.Id
 @Entity
 data class MemberAuthInfo(
         @Id
-        @GeneratedValue(strategy = GenerationType.AUTO)
-        var memberNo: Int,
-        var memberId: String,
-        var memberEmail: String,
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        var memberNo: Int?,
+        var memberId: String?,
+        var memberEmail: String?,
         var memberPassword: String,
-        var memberJoinDate: Date,
-        var memberRole: String
+        var memberJoinDate: Date?,
+        var memberRole: String?
 )
 
 @Repository
