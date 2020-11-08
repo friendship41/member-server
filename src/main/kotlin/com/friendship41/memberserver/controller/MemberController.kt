@@ -4,6 +4,7 @@ import com.friendship41.memberserver.data.MemberAuthInfo
 import com.friendship41.memberserver.service.MemberService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.User
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -14,11 +15,8 @@ import org.springframework.web.bind.annotation.RestController
 class MemberController(@Autowired private val memberService: MemberService) {
     @RequestMapping("")
     fun getMember(): Any? {
-//        val detailMap =
-//                (SecurityContextHolder.getContext().authentication.details as OAuth2AuthenticationDetails)
-//                        .decodedDetails as Map<*, *>
-//        return this.memberService.getDefaultMemberInfo(detailMap["user_name"] as String)
-        return null
+        val authInfo = SecurityContextHolder.getContext().authentication.principal as User
+        return this.memberService.getDefaultMemberInfo(authInfo.username.toInt())
     }
 }
 
