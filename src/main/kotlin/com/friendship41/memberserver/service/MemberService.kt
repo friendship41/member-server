@@ -1,12 +1,12 @@
 package com.friendship41.memberserver.service
 
+import com.friendship41.memberserver.common.BusinessException
+import com.friendship41.memberserver.data.ErrorResponse
 import com.friendship41.memberserver.data.MemberAuthInfo
 import com.friendship41.memberserver.data.MemberAuthInfoRepository
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
-import org.springframework.web.client.HttpClientErrorException
 import java.nio.file.attribute.UserPrincipalNotFoundException
 import java.util.*
 
@@ -18,12 +18,18 @@ class MemberService(@Autowired private val memberAuthInfoRepository: MemberAuthI
 
     fun getDefaultMemberInfo(memberNo: Int):MemberAuthInfo {
         return this.memberAuthInfoRepository.findById(memberNo)
-                .orElseThrow { UserPrincipalNotFoundException("user Not Found, memberNo = $memberNo") }
+                .orElseThrow { throw UserPrincipalNotFoundException("user Not Found, memberNo = $memberNo") }
     }
 
     fun registerDefailtMember(memberAuthInfo: MemberAuthInfo): Any {
         if (memberAuthInfo.memberId == null && memberAuthInfo.memberEmail == null) {
-            return HttpClientErrorException(HttpStatus.BAD_REQUEST, "No MemberId And MemberEmail")
+            throw BusinessException(ErrorResponse(
+                    "memberId, memberEmail both empty",
+                    400,
+                    "MSE001",
+                    listOf(
+                            ErrorResponse.ErrorCause("memberId", "${memberAuthInfo.memberId}", "empty"),
+                            ErrorResponse.ErrorCause("memberEmail", "${memberAuthInfo.memberEmail}", "empty"))))
         }
         if (memberAuthInfo.memberId == null) {
             memberAuthInfo.memberId = NOINFO + UUID.randomUUID().toString().substring(NOINFO.length)
