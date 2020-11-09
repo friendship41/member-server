@@ -1,13 +1,18 @@
 package com.friendship41.memberserver.config
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.friendship41.memberserver.common.CommonErrorCode
 import com.friendship41.memberserver.common.logger
+import com.friendship41.memberserver.data.ErrorResponse
 import io.jsonwebtoken.*
 import io.jsonwebtoken.security.SignatureException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -32,6 +37,7 @@ import javax.servlet.FilterChain
 import javax.servlet.ServletRequest
 import javax.servlet.ServletResponse
 import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
 
 @Configuration
 class WebSecurityConfig(
@@ -40,6 +46,7 @@ class WebSecurityConfig(
         http
                 .httpBasic().disable()
                 .formLogin().disable()
+                .logout().disable()
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
@@ -58,15 +65,29 @@ class WebSecurityConfig(
 }
 
 class JwtAuthenticationFilter(private val jwtTokenProvider: JwtTokenProvider): GenericFilterBean() {
+    private val objectMapper = ObjectMapper()
+
     override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
         val rawToken = this.jwtTokenProvider.resolveToken(request as HttpServletRequest)
         if (rawToken != null) {
-            val tokenClaims = this.jwtTokenProvider.validateJwt(rawToken)
+            val tokenClaims = try {
+                this.jwtTokenProvider.validateJwt(rawToken)
+            } catch (e: BadCredentialsException) {
+                val httpServletResponse = response as HttpServletResponse
+                httpServletResponse.status = HttpStatus.UNAUTHORIZED.value()
+                httpServletResponse.contentType = MediaType.APPLICATION_JSON_VALUE
+                httpServletResponse.writer.print(this.objectMapper.writeValueAsString(
+                        ErrorResponse(
+                                e.message ?: CommonErrorCode.BAD_CREDENTIALS.message,
+                                CommonErrorCode.BAD_CREDENTIALS.status,
+                                CommonErrorCode.BAD_CREDENTIALS.code)))
+                httpServletResponse.writer.flush()
+                return
+            }
             SecurityContextHolder.getContext().authentication =
                     this.jwtTokenProvider.getAuthentication(tokenClaims)
             (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken)
                     .details = tokenClaims
-
         }
 
         chain.doFilter(request, response)
@@ -109,22 +130,22 @@ class JwtTokenProvider {
                 .build()
                 .parseClaimsJws(jwtToken)
     } catch (e: SignatureException) {
-        logger().info("Invalid JWT signature: $jwtToken")
+        logger().error("Invalid JWT signature: $jwtToken")
         throw BadCredentialsException("Invalid JWT signature: $jwtToken")
     } catch (e: MalformedJwtException) {
-        logger().info("Invalid token: $jwtToken")
+        logger().error("Invalid token: $jwtToken")
         throw BadCredentialsException("Invalid token: $jwtToken")
     } catch (e: ExpiredJwtException) {
-        logger().info("Expired JWT token: $jwtToken")
+        logger().error("Expired JWT token: $jwtToken")
         throw BadCredentialsException("Expired JWT token: $jwtToken")
     } catch (e: UnsupportedJwtException) {
-        logger().info("Unsupported JWT token: $jwtToken")
+        logger().error("Unsupported JWT token: $jwtToken")
         throw BadCredentialsException("Unsupported JWT token: $jwtToken")
     } catch (e: IllegalArgumentException) {
-        logger().info("JWT token compact of handler are invalid: $jwtToken")
+        logger().error("JWT token compact of handler are invalid: $jwtToken")
         throw BadCredentialsException("JWT token compact of handler are invalid: $jwtToken")
     } catch (e: Exception) {
-        logger().info("Invalid token: $jwtToken")
+        logger().error("Invalid token: $jwtToken")
         throw BadCredentialsException("Invalid token: $jwtToken")
     }
 
