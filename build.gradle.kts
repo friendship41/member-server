@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "2.3.4.RELEASE"
+    id("org.springframework.boot") version "2.3.5.RELEASE"
     id("io.spring.dependency-management") version "1.0.10.RELEASE"
     kotlin("jvm") version "1.4.10"
     kotlin("plugin.spring") version "1.4.10"
@@ -24,6 +24,9 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
+    // cloud config
+    implementation("org.springframework.cloud:spring-cloud-starter-config:2.2.6.RELEASE")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
     // DB
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     // 인증
