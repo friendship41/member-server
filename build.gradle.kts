@@ -35,8 +35,6 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-api:0.11.2")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.2")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.2")
-    // validation
-    implementation("org.springframework.boot:spring-boot-starter-validation")
 
     // 코틀린
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
@@ -46,8 +44,6 @@ dependencies {
 
     // https://mvnrepository.com/artifact/mysql/mysql-connector-java
     implementation("mysql:mysql-connector-java:8.0.22")
-    // https://mvnrepository.com/artifact/com.zaxxer/HikariCP
-    implementation("com.zaxxer:HikariCP:3.4.5")
     // https://mvnrepository.com/artifact/org.bgee.log4jdbc-log4j2/log4jdbc-log4j2-jdbc4
     implementation("org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4:1.16")
 
