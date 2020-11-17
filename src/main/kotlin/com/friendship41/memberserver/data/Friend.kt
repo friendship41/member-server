@@ -8,7 +8,7 @@ import javax.persistence.Id
 @Entity
 data class MemberFriend(
         @Id
-        var memberNo: Int,
+        var memberNo: Int?,
         var friendMemberNo: Int
 )
 
