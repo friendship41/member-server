@@ -1,7 +1,7 @@
 package com.friendship41.memberserver.controller
 
-import com.friendship41.memberserver.data.MemberAuthInfo
-import com.friendship41.memberserver.service.MemberService
+import com.friendship41.memberserver.data.ReqBodyRegisterCommonMember
+import com.friendship41.memberserver.service.CommonMemberService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.User
@@ -12,18 +12,20 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/member")
-class MemberController(@Autowired private val memberService: MemberService) {
-    @RequestMapping("")
+class MemberController(@Autowired private val commonMemberService: CommonMemberService) {
+    @RequestMapping("common")
     fun getMember(): Any? {
         val authInfo = SecurityContextHolder.getContext().authentication.principal as User
-        return this.memberService.getDefaultMemberInfo(authInfo.username.toInt())
+        return this.commonMemberService.getDefaultMemberInfo(authInfo.username.toInt())
     }
 }
 
 @RestController
-class RegisterController(@Autowired private val memberService: MemberService) {
+class RegisterController(@Autowired private val commonMemberService: CommonMemberService) {
     @PostMapping("/register")
-    fun postRegister(@RequestBody memberAuthInfo: MemberAuthInfo): Any {
-        return this.memberService.registerDefailtMember(memberAuthInfo)
+    fun postRegister(@RequestBody reqBodyRegisterCommonMember: ReqBodyRegisterCommonMember): Any? {
+        return commonMemberService.registerCommonMember(
+                reqBodyRegisterCommonMember.commonMemberInfo,
+                reqBodyRegisterCommonMember.memberAuthInfo)
     }
 }

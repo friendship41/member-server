@@ -4,24 +4,29 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 import java.util.*
 import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
 import javax.persistence.Id
 
 @Entity
-data class MemberAuthInfo(
+data class CommonMemberInfo(
         @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
         var memberNo: Int?,
         var memberId: String?,
         var memberEmail: String?,
-        var memberPassword: String,
-        var memberJoinDate: Date?,
-        var memberRole: String?
+        var memberName: String?,
+        var joinDate: Date?,
+        var joinPath: String?,
+        var joinClient: String?
 )
 
 @Repository
-interface MemberAuthInfoRepository: JpaRepository<MemberAuthInfo, Int> {
-    fun findByMemberId(memberId: String): MemberAuthInfo?
-    fun findByMemberEmail(memberEmail: String): MemberAuthInfo?
-}
+interface CommonMemberInfoRepository: JpaRepository<CommonMemberInfo, Int>
+
+data class ReqBodyRegisterCommonMember(
+        var memberAuthInfo: MemberAuthInfo,
+        var commonMemberInfo: CommonMemberInfo
+)
+
+data class MemberAuthInfo(
+        var memberPassword: String,
+        var memberRole: String?
+)

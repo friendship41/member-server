@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "com.friendship41"
-version = "1.0.0"
+version = "1.1.0"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
 configurations {
@@ -24,6 +24,7 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
     // cloud config
     implementation("org.springframework.cloud:spring-cloud-starter-config:2.2.6.RELEASE")
     implementation("org.springframework.boot:spring-boot-starter-actuator")

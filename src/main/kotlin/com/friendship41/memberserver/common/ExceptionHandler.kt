@@ -94,7 +94,9 @@ enum class CommonErrorCode(val status: Int, val code: String, val message: Strin
     METHOD_NOT_ALLOWED(405, "CE002", "Not Allowed Request"),
     UNAUTHORIZED(401, "CE003", "Unauthorized, Access is Denied"),
     INTERNAL_SERVER_ERROR(500, "CE004", "Internal Server Error"),
-    BAD_CREDENTIALS(401, "CE005", "Bad Credentials")
+    BAD_CREDENTIALS(401, "CE005", "Bad Credentials");
+
+    fun toErrorResponse(): ErrorResponse = ErrorResponse(this.message, this.status, this.code)
 }
 
 data class BusinessException(val errorResponse: ErrorResponse): RuntimeException()
