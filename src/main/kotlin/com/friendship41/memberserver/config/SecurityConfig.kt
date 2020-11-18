@@ -50,7 +50,7 @@ class WebSecurityConfig(
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .authorizeRequests().antMatchers("/member").hasAuthority("USER")
+                .authorizeRequests().antMatchers("/member/**").hasAuthority("USER")
                 .and()
                 .addFilterBefore(
                         JwtAuthenticationFilter(jwtTokenProvider),
