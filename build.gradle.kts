@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "com.friendship41"
-version = "1.2.2"
+version = "1.3.0"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
 configurations {
@@ -29,7 +29,7 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-config:2.2.6.RELEASE")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     // DB
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation ("org.springframework.boot:spring-boot-starter-data-mongodb")
     // 인증
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("io.jsonwebtoken:jjwt-api:0.11.2")
@@ -40,12 +40,6 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-
-
-    // https://mvnrepository.com/artifact/mysql/mysql-connector-java
-    implementation("mysql:mysql-connector-java:8.0.22")
-    // https://mvnrepository.com/artifact/org.bgee.log4jdbc-log4j2/log4jdbc-log4j2-jdbc4
-    implementation("org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4:1.16")
 
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {

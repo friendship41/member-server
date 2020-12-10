@@ -1,19 +1,17 @@
 package com.friendship41.memberserver.data
 
-import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.mongodb.core.mapping.Document
+import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
-import javax.persistence.Entity
-import javax.persistence.Id
 
-@Entity
+@Document
 data class MemberFriend(
-        @Id
         var memberNo: Int?,
         var friendMemberNo: Int
 )
 
 @Repository
-interface MemberFriendRepository: JpaRepository<MemberFriend, Int>
+interface MemberFriendRepository: MongoRepository<MemberFriend, String>
 
 data class ReqBodyPostFriend(
         var memberFriendList: List<MemberFriend>?

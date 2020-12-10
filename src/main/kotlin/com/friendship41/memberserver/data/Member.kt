@@ -1,12 +1,12 @@
 package com.friendship41.memberserver.data
 
-import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.mapping.Document
+import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
 import java.util.*
-import javax.persistence.Entity
-import javax.persistence.Id
 
-@Entity
+@Document
 data class CommonMemberInfo(
         @Id
         var memberNo: Int?,
@@ -19,7 +19,7 @@ data class CommonMemberInfo(
 )
 
 @Repository
-interface CommonMemberInfoRepository: JpaRepository<CommonMemberInfo, Int>
+interface CommonMemberInfoRepository: MongoRepository<CommonMemberInfo, Int>
 
 data class ReqBodyRegisterCommonMember(
         var memberAuthInfo: MemberAuthInfo,

@@ -7,22 +7,10 @@ server:
     key-alias: spring
 
 spring:
-  datasource:
-    driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-    url: jdbc:log4jdbc:mysql://stage41.xyz:3306/member_db?characterEncoding=UTF-8&serverTimezone=Asia/Seoul
-    username: stage41
-    password: anjajdsid
-    hikari:
-      connection-timeout: 60000
-      maximum-pool-size: 5
-  jpa:
-    generate-ddl: false
-    show-sql: false
-    database: mysql
-    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
-    hibernate:
-      naming:
-        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+  data:
+    mongodb:
+      uri: mongodb://stage41:anjajdsid@stage41.xyz:27017
+      database: member
 
 logging:
   level:

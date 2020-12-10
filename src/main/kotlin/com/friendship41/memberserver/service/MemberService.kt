@@ -48,25 +48,22 @@ class CommonMemberService(
         return commonMemberInfo
     }
 
-    private fun getMemberAuthInfoFromAuthServer(
-            memberAuthKey: String, memberPassword: String, memberRole: String?): Map<*, *> {
-        val reqMap = HashMap<String, Any>()
-        reqMap["memberAuthKey"] = memberAuthKey
-        reqMap["memberPassword"] = memberPassword
-        reqMap["memberRole"] = memberRole ?: "USER"
-
-        return webClient.mutate()
-                .baseUrl("https://stage41.xyz:42222")
-                .build()
-                .post()
-                .uri("/authInfo")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(reqMap)
-                .retrieve()
-                .bodyToMono(Map::class.java)
-                .flux()
-                .toStream()
-                .findFirst()
-                .orElse(null)
-    }
+    private fun getMemberAuthInfoFromAuthServer(memberAuthKey: String,
+                                                memberPassword: String,
+                                                memberRole: String?): Map<*, *> = webClient.mutate()
+            .baseUrl("https://stage41.xyz:42222")
+            .build()
+            .post()
+            .uri("/authInfo")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(mapOf(
+                Pair("memberAuthKey", memberAuthKey),
+                Pair("memberPassword", memberPassword),
+                Pair("memberRole", memberRole ?: "USER")))
+            .retrieve()
+            .bodyToMono(Map::class.java)
+            .flux()
+            .toStream()
+            .findFirst()
+            .orElse(null)
 }
