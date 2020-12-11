@@ -2,7 +2,7 @@ package com.friendship41.memberserver.data
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
-import org.springframework.data.mongodb.repository.MongoRepository
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository
 import org.springframework.stereotype.Repository
 import java.util.*
 
@@ -19,7 +19,7 @@ data class CommonMemberInfo(
 )
 
 @Repository
-interface CommonMemberInfoRepository: MongoRepository<CommonMemberInfo, Int>
+interface CommonMemberInfoRepository: ReactiveMongoRepository<CommonMemberInfo, Int>
 
 data class ReqBodyRegisterCommonMember(
         var memberAuthInfo: MemberAuthInfo,

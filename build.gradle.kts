@@ -23,15 +23,14 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     // cloud config
     implementation("org.springframework.cloud:spring-cloud-starter-config:2.2.6.RELEASE")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     // DB
-    implementation ("org.springframework.boot:spring-boot-starter-data-mongodb")
+    implementation ("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
     // 인증
-    implementation("org.springframework.boot:spring-boot-starter-security")
+//    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("io.jsonwebtoken:jjwt-api:0.11.2")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.2")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.2")

@@ -1,18 +1,22 @@
 package com.friendship41.memberserver.data
 
+import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.repository.MongoRepository
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository
 import org.springframework.stereotype.Repository
 
 @Document
 data class MemberFriend(
-        var memberNo: Int?,
-        var friendMemberNo: Int
+        @Id
+        var memberNo: Int,
+        var friendMemberNoSet: MutableSet<Int>
 )
 
 @Repository
-interface MemberFriendRepository: MongoRepository<MemberFriend, String>
+interface MemberFriendRepository: ReactiveMongoRepository<MemberFriend, Int>
 
-data class ReqBodyPostFriend(
-        var memberFriendList: List<MemberFriend>?
+data class PostMemberFriend(
+        val memberNo: Int,
+        val friendMemberNo: Int
 )
