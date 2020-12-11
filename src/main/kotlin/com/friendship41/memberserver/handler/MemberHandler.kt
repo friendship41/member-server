@@ -5,6 +5,7 @@ import com.friendship41.memberserver.data.CommonMemberInfoRepository
 import com.friendship41.memberserver.data.ReqBodyPostMember
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
+import org.springframework.security.core.context.ReactiveSecurityContextHolder
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.server.ServerRequest
@@ -29,6 +30,12 @@ class MemberHandler(@Autowired private val commonMemberInfoRepository: CommonMem
             this.createDefaultCommonMemberInfoEntity(it.t1.commonMemberInfo, it.t2) }
         .flatMap { commonMemberInfoRepository.save(it) }
         .flatMap { ok().bodyValue(it) }
+
+    // TODO: 이 부분 이용해서 본인 정보 조회 구현 필요
+//    fun getCommonMember(request: ServerRequest): Mono<ServerResponse> = ReactiveSecurityContextHolder
+//        .getContext().flatMap {
+//            ok().bodyValue(it.authentication)
+//        }
 
     fun getCommonMember(request: ServerRequest): Mono<ServerResponse> = commonMemberInfoRepository
         .findById(request.pathVariable("memberNo").toInt())

@@ -1,5 +1,65 @@
-//package com.friendship41.memberserver.config
-//
+package com.friendship41.memberserver.config
+
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
+import org.springframework.http.HttpStatus
+import org.springframework.security.authentication.ReactiveAuthenticationManager
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.config.web.server.SecurityWebFiltersOrder
+import org.springframework.security.config.web.server.ServerHttpSecurity
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.AuthenticationException
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.web.server.SecurityWebFilterChain
+import org.springframework.security.web.server.ServerAuthenticationEntryPoint
+import org.springframework.security.web.server.authentication.AuthenticationWebFilter
+import org.springframework.stereotype.Component
+import org.springframework.web.server.ServerWebExchange
+import reactor.core.publisher.Mono
+
+@Configuration
+class SecurityConfig {
+    @Bean
+    fun securityWebFilterChain(http: ServerHttpSecurity, entryPoint: UnauthorizedAuthenticationEntryPoint): SecurityWebFilterChain {
+        return http
+            .exceptionHandling()
+            .authenticationEntryPoint(entryPoint)
+            .and()
+            .addFilterAt(jwtAuthenticationWebFilter(), SecurityWebFiltersOrder.AUTHENTICATION)
+            .authorizeExchange().pathMatchers(HttpMethod.POST, "/member").permitAll()
+            .and()
+            .authorizeExchange().pathMatchers(HttpMethod.POST, "/friend").permitAll()
+            .anyExchange().authenticated()
+            .and()
+            .httpBasic().disable()
+            .csrf().disable()
+            .formLogin().disable()
+            .logout().disable()
+            .build()
+    }
+
+    @Bean
+    fun jwtAuthenticationWebFilter(): AuthenticationWebFilter {
+        val authenticationWebFilter = AuthenticationWebFilter(ReactiveAuthenticationManager { Mono.just(it) })
+        // TODO: Jwt 컨버터 구현
+        // 참고 : https://stackoverflow.com/questions/46793245/how-preauthorize-is-working-in-an-reactive-application-or-how-to-live-without-t
+        authenticationWebFilter.setServerAuthenticationConverter {
+            Mono.just(UsernamePasswordAuthenticationToken("test", "test", listOf(
+                SimpleGrantedAuthority("USER")
+            )))
+        }
+        return authenticationWebFilter
+    }
+}
+
+@Component
+class UnauthorizedAuthenticationEntryPoint: ServerAuthenticationEntryPoint {
+    override fun commence(exchange: ServerWebExchange, e: AuthenticationException): Mono<Void> = Mono
+        .fromRunnable { exchange.response.statusCode = HttpStatus.UNAUTHORIZED }
+}
+
 //import com.fasterxml.jackson.databind.ObjectMapper
 //import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 //import com.friendship41.memberserver.common.CommonErrorCode
