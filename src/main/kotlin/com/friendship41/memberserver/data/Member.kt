@@ -15,13 +15,13 @@ data class CommonMemberInfo(
         var memberName: String?,
         var joinDate: Date?,
         var joinPath: String?,
-        var joinClient: String?
+        var joinClient: String
 )
 
 @Repository
 interface CommonMemberInfoRepository: ReactiveMongoRepository<CommonMemberInfo, Int>
 
-data class ReqBodyRegisterCommonMember(
+data class ReqBodyPostMember(
         var memberAuthInfo: MemberAuthInfo,
         var commonMemberInfo: CommonMemberInfo
 )
